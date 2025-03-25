@@ -4,9 +4,9 @@
 #  WPUpload-Unlocked-GCP.sh
 #  WordPress Upload Limit Configuration Tool for Google Cloud Platform
 #  Version: 1.0
-#  Author: Your Name
+#  Author: GA0LU
 #  Description: Automatically configures PHP upload limits for WordPress on GCP
-#  Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force]
+#  Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force] [--c <size>]
 #         wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh | sudo bash
 #=============================================================================
 
@@ -16,22 +16,48 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# 初始化变量
+FORCE_MODE=false
+CUSTOM_SIZE=""
+
+# 处理命令行参数
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force)
+            FORCE_MODE=true
+            shift
+            ;;
+        --c)
+            if [[ -n "$2" && "$2" =~ ^[0-9]+$ ]]; then
+                CUSTOM_SIZE="$2"
+                shift 2
+            else
+                echo "Error: --c requires a numeric value"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Unknown parameter: $1"
+            echo "Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force] [--c <size>]"
+            exit 1
+            ;;
+    esac
+done
+
 # 检查是否在管道中运行
 if [ ! -t 0 ]; then
     echo "Running in non-interactive mode (pipeline)"
-    echo "Using default values:"
-    echo "- Upload size: 64MB"
-    echo "- Memory limit: 128MB"
-    echo "- Timeout: 300 seconds"
-    echo "----------------------------------------"
-    upload_size=64
-    FORCE_MODE=true
-else
-    # 检查是否使用--force参数
-    FORCE_MODE=false
-    if [ "$1" = "--force" ]; then
-        FORCE_MODE=true
+    if [ -n "$CUSTOM_SIZE" ]; then
+        echo "Using custom upload size: ${CUSTOM_SIZE}MB"
+        upload_size="$CUSTOM_SIZE"
+    else
+        echo "Using default values:"
+        echo "- Upload size: 1024MB (1GB)"
+        echo "- Memory limit: 2048MB (2GB)"
+        echo "- Timeout: 600 seconds"
+        upload_size=1024
     fi
+    FORCE_MODE=true
 fi
 
 # ASCII Art Logo
@@ -174,12 +200,12 @@ echo "Detected web server: ${WEB_SERVER}"
 # 请求用户输入上传大小
 if [ "$FORCE_MODE" = false ]; then
     while true; do
-        echo "Please enter the maximum upload file size in MB (default: 64MB)"
+        echo "Please enter the maximum upload file size in MB (default: 1024MB = 1GB)"
         echo "Press Enter for default value or enter a custom value:"
         read -r upload_size
         
         if [ -z "$upload_size" ]; then
-            upload_size=64
+            upload_size=1024
             break
         fi
         
@@ -190,7 +216,11 @@ if [ "$FORCE_MODE" = false ]; then
         fi
     done
 else
-    upload_size=64  # 强制模式下使用默认值
+    if [ -n "$CUSTOM_SIZE" ]; then
+        upload_size="$CUSTOM_SIZE"
+    else
+        upload_size=1024  # 强制模式下使用默认值
+    fi
 fi
 
 # 计算其他参数
