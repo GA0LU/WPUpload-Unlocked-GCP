@@ -4,9 +4,10 @@
 #  WPUpload-Unlocked-GCP.sh
 #  WordPress Upload Limit Configuration Tool for Google Cloud Platform
 #  Version: 1.0
-#  Author: GA0LU
+#  Author: Your Name
 #  Description: Automatically configures PHP upload limits for WordPress on GCP
 #  Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force]
+#         wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh | sudo bash
 #=============================================================================
 
 # 检查是否以root权限运行
@@ -15,10 +16,22 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# 检查是否使用--force参数
-FORCE_MODE=false
-if [ "$1" = "--force" ]; then
+# 检查是否在管道中运行
+if [ ! -t 0 ]; then
+    echo "Running in non-interactive mode (pipeline)"
+    echo "Using default values:"
+    echo "- Upload size: 64MB"
+    echo "- Memory limit: 128MB"
+    echo "- Timeout: 300 seconds"
+    echo "----------------------------------------"
+    upload_size=64
     FORCE_MODE=true
+else
+    # 检查是否使用--force参数
+    FORCE_MODE=false
+    if [ "$1" = "--force" ]; then
+        FORCE_MODE=true
+    fi
 fi
 
 # ASCII Art Logo
