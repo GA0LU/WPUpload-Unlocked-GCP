@@ -1,83 +1,116 @@
-# 🚀 WPUpload-Unlocked-GCP
+# WordPress Upload Limit Configuration Tool for GCP
 
-> Easily unlock WordPress upload limits on Google Cloud instances with one command.
+An automated tool for configuring WordPress upload limits on Google Cloud Platform.
 
----
+## Features
 
-## ⚡ One-Line Install
+- Automatic PHP version and configuration file detection
+- Automatic web server type detection (Apache2/Nginx)
+- Smart memory limit and timeout calculation
+- Automatic backup of original configuration files
+- Support for both interactive and non-interactive execution
+- Custom upload size support
+- Automatic service restart
 
+## System Requirements
+
+- Linux operating system (Ubuntu/Debian recommended)
+- PHP-FPM installed
+- Apache2 or Nginx installed
+- Root privileges (using sudo)
+
+## Installation
+
+### Method 1: Direct Execution (Recommended)
+
+Using default configuration (1GB upload limit):
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh)
+wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh | sudo bash
 ```
 
-Or with curl:
-
+Specify custom upload size (e.g., 2GB):
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh)
+wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh | sudo bash -s -- --c 2048
 ```
 
----
+### Method 2: Download and Execute
 
-## 📌 What It Does
+1. Download the script:
+```bash
+wget https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh
+```
 
-This script automatically updates PHP config values for WordPress on **Google Cloud Marketplace** instances:
+2. Add execute permission:
+```bash
+chmod +x WPUpload-Unlocked-GCP.sh
+```
 
-- `upload_max_filesize`
-- `post_max_size`
-- `memory_limit`
-- `max_execution_time`
-- `max_input_time`
+3. Run the script:
+```bash
+sudo ./WPUpload-Unlocked-GCP.sh
+```
 
-It also:
-- Detects PHP version and `php.ini` location
-- Supports both **Apache2** and **Nginx**
-- Backs up your original config
-- Restarts services for changes to take effect
+## Command Line Arguments
 
----
+- `--force`: Force mode, automatically use default values and restart services
+- `--c <size>`: Specify custom upload size (in MB)
 
-## 🖥️ How to Use
+## Default Configuration
 
-1. Run the one-liner above (requires `sudo`)
-2. Follow the prompt to enter your desired upload file size (in MB)
-3. Confirm if you'd like to restart services
-4. Done 🎉
+- Upload size: 1024MB (1GB)
+- Memory limit: 2048MB (2GB)
+- Timeout: 600 seconds
 
----
+## Configuration Backup
 
-## 🔒 Backup
-
-Your original `php.ini` is backed up automatically to:
-
+Original configuration files are automatically backed up to:
 ```
 /etc/php/backups/php.ini.backup.YYYYMMDD_HHMMSS
 ```
 
----
+## Supported PHP Versions
 
-## ✅ Requirements
+- PHP 8.2
+- PHP 8.1
+- PHP 8.0
+- PHP 7.4
+- PHP 7.3
+- PHP 7.2
+- PHP 7.1
+- PHP 7.0
 
-- WordPress deployed via **Google Cloud Marketplace**
-- PHP-FPM installed (7.0–8.2 supported)
-- Apache2 or Nginx running
-- `sudo` access
+## Important Notes
 
----
+1. Root privileges are required to execute the script
+2. Backup important data before execution
+3. PHP-FPM and web server will be restarted after configuration changes
+4. Upload size should not exceed half of the server's available memory
 
-## 🛠 Example Use Cases
+## Troubleshooting
 
-- Uploading large `.wpress` backups via All-in-One Migration
-- Fixing HTTP upload errors
-- Preparing for large media libraries
+If you encounter issues, please check:
 
----
+1. PHP-FPM is properly installed
+2. Web server (Apache2/Nginx) is running
+3. Sufficient disk space for backup
+4. System logs for any error messages
 
-## 🧑‍💻 Author
+## License
 
-Made with ❤️ by [GA0LU](https://github.com/GA0LU)
+MIT License
 
----
+## Contributing
 
-## 📄 License
+Issues and Pull Requests are welcome to help improve this tool.
 
-MIT
+## Author
+
+GA0LU
+
+## Changelog
+
+### v1.0
+- Initial release
+- Automatic PHP version and web server detection
+- Custom upload size support
+- Configuration file backup functionality 
