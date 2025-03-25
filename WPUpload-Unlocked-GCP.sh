@@ -4,7 +4,7 @@
 #  WPUpload-Unlocked-GCP.sh
 #  WordPress Upload Limit Configuration Tool for Google Cloud Platform
 #  Version: 1.0
-#  Author: GA0LU
+#  Author: Your Name
 #  Description: Automatically configures PHP upload limits for WordPress on GCP
 #  Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force] [--c <size>]
 #         wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh | sudo bash
@@ -78,23 +78,49 @@ echo "
 
 # 检测PHP版本的函数
 detect_php_version() {
-    # 检查常见的PHP-FPM版本目录
-    local php_versions=("8.2" "8.1" "8.0" "7.4" "7.3" "7.2" "7.1" "7.0")
     local php_ini_path=""
     
-    for version in "${php_versions[@]}"; do
-        if [ -f "/etc/php/${version}/fpm/php.ini" ]; then
-            php_ini_path="/etc/php/${version}/fpm/php.ini"
-            echo "$php_ini_path"
-            return 0
-        fi
-    done
-    
-    # 如果没找到，尝试使用php -v命令检测
+    # 首先尝试使用php -v命令检测
     if command -v php >/dev/null 2>&1; then
         local php_version=$(php -v | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1,2)
         if [ -f "/etc/php/${php_version}/fpm/php.ini" ]; then
             php_ini_path="/etc/php/${php_version}/fpm/php.ini"
+            echo "$php_ini_path"
+            return 0
+        fi
+    fi
+    
+    # 如果php -v命令失败，尝试查找所有PHP-FPM配置文件
+    if [ -d "/etc/php" ]; then
+        # 查找所有php.ini文件
+        local php_ini_files=$(find /etc/php -name "php.ini" -type f 2>/dev/null)
+        
+        # 按版本号排序，选择最新的版本
+        local latest_version=""
+        local latest_path=""
+        
+        for ini_file in $php_ini_files; do
+            if [[ $ini_file =~ /etc/php/([0-9]+\.[0-9]+)/ ]]; then
+                local version="${BASH_REMATCH[1]}"
+                if [ -z "$latest_version" ] || [ "$(printf '%s\n' "$version" "$latest_version" | sort -V | tail -n1)" = "$version" ]; then
+                    latest_version="$version"
+                    latest_path="$ini_file"
+                fi
+            fi
+        done
+        
+        if [ -n "$latest_path" ]; then
+            php_ini_path="$latest_path"
+            echo "$php_ini_path"
+            return 0
+        fi
+    fi
+    
+    # 如果还是没找到，尝试使用php-fpm命令
+    if command -v php-fpm >/dev/null 2>&1; then
+        local php_fpm_version=$(php-fpm -v | head -n 1 | cut -d " " -f 2 | cut -d "." -f 1,2)
+        if [ -f "/etc/php/${php_fpm_version}/fpm/php.ini" ]; then
+            php_ini_path="/etc/php/${php_fpm_version}/fpm/php.ini"
             echo "$php_ini_path"
             return 0
         fi
