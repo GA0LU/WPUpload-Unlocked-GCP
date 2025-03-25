@@ -4,7 +4,7 @@
 #  WPUpload-Unlocked-GCP.sh
 #  WordPress Upload Limit Configuration Tool for Google Cloud Platform
 #  Version: 1.0
-#  Author: Your Name
+#  Author: GA0LU
 #  Description: Automatically configures PHP upload limits for WordPress on GCP
 #  Usage: sudo ./WPUpload-Unlocked-GCP.sh [--force]
 #=============================================================================
