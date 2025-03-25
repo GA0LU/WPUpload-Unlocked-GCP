@@ -1,64 +1,76 @@
 # 🚀 WPUpload-Unlocked-GCP
 
-A one-click Bash script to unlock WordPress upload file size limits on **Google Cloud Platform** (GCP) instances deployed via the **Google Cloud Marketplace**.
-
-Supports Apache2 or Nginx with PHP-FPM stack.
+> Easily unlock WordPress upload limits on Google Cloud instances with one command.
 
 ---
 
-## ✨ Features
-
-- ✅ Auto-detects PHP version and `php.ini` path
-- ✅ Works with Apache2 or Nginx
-- ✅ Backs up original PHP configuration
-- ✅ Automatically configures:
-  - `upload_max_filesize`
-  - `post_max_size`
-  - `memory_limit`
-  - `max_execution_time`
-  - `max_input_time`
-- ✅ Supports interactive mode and silent `--force` mode
-- ✅ Automatically restarts PHP-FPM and web server (if confirmed)
-
----
-
-## ⚡️ One-Line Setup (Silent Mode)
-
-To instantly configure your GCP WordPress instance with **64MB upload limit**, run:
+## ⚡ One-Line Install
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh) --force
-Or using curl:
+bash <(wget -qO- https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh)
+Or with curl:
 
 bash
 Copy
 Edit
-bash <(curl -sSL https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh) --force
-🖥️ Manual Mode (Interactive)
-You can run the script manually and choose your custom upload limit:
+bash <(curl -sSL https://raw.githubusercontent.com/GA0LU/WPUpload-Unlocked-GCP/main/WPUpload-Unlocked-GCP.sh)
+📌 What It Does
+This script automatically updates PHP config values for WordPress on Google Cloud Marketplace instances:
 
-bash
-Copy
-Edit
-sudo ./WPUpload-Unlocked-GCP.sh
-📂 Backup Location
-The original php.ini file will be backed up to:
+upload_max_filesize
+
+post_max_size
+
+memory_limit
+
+max_execution_time
+
+max_input_time
+
+It also:
+
+Detects PHP version and php.ini location
+
+Supports both Apache2 and Nginx
+
+Backs up your original config
+
+Restarts services for changes to take effect
+
+🖥️ How to Use
+Run the one-liner above (requires sudo)
+
+Follow the prompt to enter your desired upload file size (in MB)
+
+Confirm if you'd like to restart services
+
+Done 🎉
+
+🔒 Backup
+Your original php.ini is backed up automatically to:
 
 swift
 Copy
 Edit
 /etc/php/backups/php.ini.backup.YYYYMMDD_HHMMSS
-📦 Requirements
-✅ A WordPress instance deployed from Google Cloud Marketplace
+✅ Requirements
+WordPress deployed via Google Cloud Marketplace
 
-✅ PHP-FPM installed (supported versions: 7.0 – 8.2)
+PHP-FPM installed (7.0–8.2 supported)
 
-✅ Running web server: Apache2 or Nginx
+Apache2 or Nginx running
 
-✅ sudo access
+sudo access
 
-🛡 License
-MIT License
+🛠 Example Use Cases
+Uploading large .wpress backups via All-in-One Migration
 
-👨‍💻 Author
+Fixing HTTP upload errors
+
+Preparing for large media libraries
+
+🧑‍💻 Author
 Made with ❤️ by GA0LU
+
+📄 License
+MIT
